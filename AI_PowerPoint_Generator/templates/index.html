@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title mb-0">
+                    <i data-feather="file-plus" class="me-2"></i>
+                    Create PowerPoint Presentation
+                </h2>
+            </div>
+            <div class="card-body">
+                <form id="presentationForm" method="POST" action="{{ url_for('main.generate') }}" enctype="multipart/form-data">
+                    <!-- Presentation Title -->
+                    <div class="mb-4">
+                        <label for="title" class="form-label">
+                            <i data-feather="type" class="me-1"></i>
+                            Presentation Title <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="title" name="title" required maxlength="200" 
+                               placeholder="Enter your presentation title">
+                        <div class="form-text">Maximum 200 characters</div>
+                    </div>
+
+                    <!-- Theme Selection -->
+                    <div class="mb-4">
+                        <label for="theme" class="form-label">
+                            <i data-feather="droplet" class="me-1"></i>
+                            Theme
+                        </label>
+                        <select class="form-select" id="theme" name="theme">
+                            {% for theme in themes %}
+                                <option value="{{ theme.key }}">{{ theme.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- AI Enhancement Section -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enhance_ai" name="enhance_ai">
+                                <label class="form-check-label" for="enhance_ai">
+                                    <i data-feather="zap" class="me-1"></i>
+                                    <strong>Enhance with AI (Google Gemini)</strong>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="card-body" id="aiOptions" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="enhancement_mode" class="form-label">Enhancement Mode</label>
+                                    <select class="form-select" id="enhancement_mode" name="enhancement_mode">
+                                        <option value="polish">Polish (improve clarity)</option>
+                                        <option value="expand">Expand (add more content)</option>
+                                        <option value="notes">Notes (add speaker notes)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="tone" class="form-label">Tone</label>
+                                    <select class="form-select" id="tone" name="tone">
+                                        <option value="professional">Professional</option>
+                                        <option value="friendly">Friendly</option>
+                                        <option value="concise">Concise</option>
+                                        <option value="formal">Formal</option>
+                                        <option value="casual">Casual</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="max_bullets" class="form-label">Max New Bullets</label>
+                                    <select class="form-select" id="max_bullets" name="max_bullets">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3" selected>3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="alert alert-info mt-3">
+                                <i data-feather="info" class="me-2"></i>
+                                <small>AI enhancement will improve your content using Google Gemini. Your content will be sent to Google's servers for processing.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slides Section -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>
+                                <i data-feather="layers" class="me-2"></i>
+                                Slides
+                            </h4>
+                            <button type="button" class="btn btn-outline-primary" id="addSlideBtn">
+                                <i data-feather="plus" class="me-1"></i>
+                                Add Slide
+                            </button>
+                        </div>
+                        
+                        <div id="slidesContainer">
+                            <!-- Initial slide -->
+                            <div class="slide-block card mb-3" data-slide-index="0">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Slide 1</h6>
+                                    <button type="button" class="btn btn-sm btn-outline-danger remove-slide-btn" style="display: none;">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Slide Title <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="slide_title_0" required maxlength="200" 
+                                               placeholder="Enter slide title">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Bullet Points</label>
+                                        <textarea class="form-control" name="slide_bullets_0" rows="4" 
+                                                  placeholder="Enter bullet points (one per line)&#10;• First point&#10;• Second point&#10;• Third point"></textarea>
+                                        <div class="form-text">One bullet point per line. Maximum 10 bullets per slide.</div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Image URL (optional)</label>
+                                            <input type="url" class="form-control" name="slide_image_url_0" 
+                                                   placeholder="https://example.com/image.jpg">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Or Upload Image</label>
+                                            <input type="file" class="form-control" name="slide_image_file_0" 
+                                                   accept="image/png,image/jpeg,image/jpg">
+                                            <div class="form-text">PNG, JPG, or JPEG format. Max 5MB.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg" id="generateBtn">
+                            <i data-feather="download" class="me-2"></i>
+                            Generate PowerPoint
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // AI options toggle
+    document.getElementById('enhance_ai').addEventListener('change', function() {
+        const aiOptions = document.getElementById('aiOptions');
+        aiOptions.style.display = this.checked ? 'block' : 'none';
+    });
+
+    // Form submission handling
+    document.getElementById('presentationForm').addEventListener('submit', function() {
+        const generateBtn = document.getElementById('generateBtn');
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
+    });
+</script>
+{% endblock %}

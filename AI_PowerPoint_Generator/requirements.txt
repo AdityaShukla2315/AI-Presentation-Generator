@@ -1,0 +1,14 @@
+flask
+flask-sqlalchemy
+flask-login
+flask-wtf
+google-genai
+python-pptx
+requests
+python-dotenv
+passlib
+email-validator
+gunicorn
+psycopg2-binary
+pytest
+werkzeug
