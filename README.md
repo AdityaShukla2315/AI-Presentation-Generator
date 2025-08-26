@@ -1,7 +1,7 @@
 # AI PowerPoint Generator
 
 <div align="center">
-  <img src="assets/ppt.avif" alt="AI PowerPoint Generator Demo" width="600"/>
+  <img src="assets/ppt.png" alt="AI PowerPoint Generator Demo" width="600"/>
   <br>
   <em>Generate professional PowerPoint presentations with AI-powered content enhancement</em>
 </div>
